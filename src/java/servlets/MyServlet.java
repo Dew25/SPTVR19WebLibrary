@@ -1,13 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Алгоритм создания веб приложения на JavaEE
+ * 
+ * 1. В NetBeans создаем веб приложение.
+ *      File->New Project -> Java Web -> Web application
+ * 2. Создать сущностные классы с аннотациями в пакете entity
+ * 3. Создать базу данных с пользователем и паролем.
+ * 4. Создать persistence.xml (useUnicode=true&characterEncoding=utf8)
+ * 5. Создать сессионные бины в пакете session (используем паттерн Фасад)
+ * 6. Создать jsp страницы со ссылками и формами. Проставить правильные запросы 
+ *      в тегах <a href="..."> и <form action="..." method="POST">
+ * 7. Создать сервлет "MyServlet" в пакете servlets.
+ * 8. В аннотации @WebServlet(urlPatherns={"..."}) вместо многоточия прописать 
+ *      паттерны запросов из jsp страниц
+ * 9. В методе processRequest получить паттерн из текущего запроса в переменную 
+ *      String path = request.getServletPath();
+ * 10. В кейсах switch обработать полученный запрос и отправить веб контейнеру 
+ *      страничку с данными для передачи ее клиенту. 
+ *      Например: 
+ *      request.getRequestDispatcher("/WEB-INF/addBookForm.jsp").forward(request, response);
+ * 
  */
 package servlets;
 
 import entity.Book;
 import entity.Reader;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +43,9 @@ import session.ReaderFacade;
     "/addBook",
     "/createBook",
     "/addReader",
-    "/createReader"
+    "/createReader",
+    "/listBooks",
+    
 })
 public class MyServlet extends HttpServlet {
     @EJB 
@@ -79,7 +99,7 @@ public class MyServlet extends HttpServlet {
                 String lastname = request.getParameter("lastname");
                 String phone = request.getParameter("phone");
                 if("".equals(name) || name == null 
-                        || "".equals(lastname) || lastname == null
+                      || "".equals(lastname) || lastname == null
                         || "".equals(phone) || phone == null){
                     request.setAttribute("info","Заполните все поля формы");
                     request.setAttribute("name",name);
@@ -94,6 +114,11 @@ public class MyServlet extends HttpServlet {
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
                 break;
             
+            case "/listBooks":
+                List<Book> listBooks = bookFacade.findAll();
+                request.setAttribute("listBooks", listBooks);
+                request.getRequestDispatcher("/WEB-INF/listBooks.jsp").forward(request, response);
+                break;
         }
     }
 

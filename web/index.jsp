@@ -17,6 +17,8 @@
         <br>
         <a href="addBook">Добавить новую книгу</a>
         <a href="addReader">Добавить читателя</a>
+        <a href="listBooks">Список книг</a>
+        
         
     </body>
 </html>
