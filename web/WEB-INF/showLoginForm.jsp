@@ -9,17 +9,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Вход в систему</title>
     </head>
     <body>
-        <h1>Добавить читателя</h1>
-        <form action="createReader" method="POST">
-            Имя: <input type="text" name="name" value="${name}"><br>
-            Фамилия: <input type="text" name="lastname" value="${lastname}"><br>
-            Телефон: <input type="text" name="phone" value="${phone}"><br>
+        <h1>Введите логин и пароль</h1>
+        <p>${info}</p>
+        <form action="login" method="POST">
             Логин: <input type="text" name="login" value="${login}"><br>
             Пароль: <input type="password" name="password" value=""><br>
-           <input type="submit" name="submit" value="Отправить"><br>
+           <input type="submit" name="submit" value="Войти"><br>
         </form>
     </body>
 </html>

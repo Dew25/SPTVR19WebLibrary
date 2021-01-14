@@ -14,11 +14,14 @@
     </head>
     <body>
         <h1>Книги библиотеки:</h1>
-        <select name="bookId" multiple="true">
-            <option value="">Список книг</option>
-            <c:forEach var="book" items="${listBooks}">
-                <option value="${book.id}">"${book.name}". ${book.author}. ${book.publishedYear} </option>
-            </c:forEach>
-        </select>
+        <form action="editBookForm" method="POST">
+            <select name="bookId" multiple="true">
+                <option value="">Список книг</option>
+                <c:forEach var="book" items="${listBooks}">
+                    <option value="${book.id}">"${book.name}". ${book.author}. ${book.publishedYear}</option>
+                </c:forEach>
+            </select>
+            <input type="submit" value="Изменить выбранную книгу">
+        </form>
     </body>
 </html>

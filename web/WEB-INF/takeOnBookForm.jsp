@@ -22,14 +22,9 @@
                 </c:forEach>
             </select>
             <br>
-            <select name="readerId">
-                <option value="">Список читателей</option>
-                <c:forEach var="reader" items="${listReaders}">
-                    <option value="${reader.id}">"${reader.name}". ${reader.lastname}. ${reader.phone} </option>
-                </c:forEach>
-            </select>    
+            
             <br>
-            <input type="submit" value="Выдать книгу">
+            <input type="submit" value="Взять книгу">
         </form>    
     </body>
 </html>
