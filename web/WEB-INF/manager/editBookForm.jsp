@@ -5,14 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Редактирование книги</title>
-    </head>
-    <body>
-        <h1>Изменить атрибуты книги</h1>
+
+        <h3>Изменить атрибуты книги</h3>
         <p>${info}</p>
         <form action="editBook" method="POST">
             <input type="hidden" name="bookId" value="${book.id}">
@@ -21,5 +15,4 @@
             Год издания книги: <input type="text" name="publishedYear" value="${book.publishedYear}"><br>
            <input type="submit" name="submit" value="Отправить"><br>
         </form>
-    </body>
-</html>
+    

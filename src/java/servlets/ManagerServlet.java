@@ -61,26 +61,26 @@ public class ManagerServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if(session == null){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         User user = (User) session.getAttribute("user");
         if(user == null){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         boolean isRole = userRolesFacade.isRole("MANAGER", user);
         if(!isRole){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему с соответствующими правами");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         String path = request.getServletPath();
         
         switch (path) {
             case "/addBook":
-                request.getRequestDispatcher("/WEB-INF/addBookForm.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("addBook")).forward(request, response);
                 break;
             case "/createBook":
                 String name = request.getParameter("name");
@@ -93,19 +93,19 @@ public class ManagerServlet extends HttpServlet {
                     request.setAttribute("name",name);
                     request.setAttribute("author",author);
                     request.setAttribute("publishedYear",publishedYear);
-                    request.getRequestDispatcher("/WEB-INF/addBookForm.jsp").forward(request, response);
+                    request.getRequestDispatcher("/addBook").forward(request, response);
                     break; 
                 }
                 Book book = new Book(name, author, Integer.parseInt(publishedYear));
                 bookFacade.create(book);
                 request.setAttribute("info","Добавлена книга: " +book.toString() );
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/editBookForm":
                 String bookId = request.getParameter("bookId");
                 book = bookFacade.find(Long.parseLong(bookId));
                 request.setAttribute("book", book);
-                request.getRequestDispatcher("/WEB-INF/editBookForm.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("editBook")).forward(request, response);
                 break;
             case "/editBook":
                 bookId = request.getParameter("bookId");

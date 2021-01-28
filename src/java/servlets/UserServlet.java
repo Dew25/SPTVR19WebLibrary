@@ -63,19 +63,19 @@ public class UserServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if(session == null){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         User user = (User) session.getAttribute("user");
         if(user == null){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         boolean isRole = userRolesFacade.isRole("READER", user);
         if(!isRole){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему с соответствующими правами");
-            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
         String path = request.getServletPath();
@@ -84,7 +84,7 @@ public class UserServlet extends HttpServlet {
             case "/takeOnBookForm":
                 List<Book> listBooks = bookFacade.findAll();
                 request.setAttribute("listBooks", listBooks);
-                request.getRequestDispatcher("/WEB-INF/takeOnBookForm.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("takeOnBook")).forward(request, response);
                 break;
             case "/takeOnBook":
                 String bookId = request.getParameter("bookId");
@@ -93,12 +93,12 @@ public class UserServlet extends HttpServlet {
                 History history = new History(book, reader, new GregorianCalendar().getTime(), null);
                 historyFacade.create(history);
                 request.setAttribute("info","Добавлена выдана");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/returnBookForm":
                 List<History> listHistoriesWithReadBook = historyFacade.findHistoriesWithReadBook(user.getReader());
                 request.setAttribute("listHistoriesWithReadBook", listHistoriesWithReadBook);
-                request.getRequestDispatcher("/WEB-INF/returnBookForm.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("returnBook")).forward(request, response);
                 break;
             case "/returnBook":
                 String historyId = request.getParameter("historyId");
@@ -111,7 +111,7 @@ public class UserServlet extends HttpServlet {
                 history.setReturnDate(new GregorianCalendar().getTime());
                 historyFacade.edit(history);
                 request.setAttribute("info","Добавлена возвращена");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
         }
     }
