@@ -23,6 +23,7 @@ import session.BookFacade;
 import session.HistoryFacade;
 import session.ReaderFacade;
 import session.UserFacade;
+import session.UserRolesFacade;
 
 /**
  *
@@ -44,6 +45,7 @@ public class UserServlet extends HttpServlet {
     private HistoryFacade historyFacade;
     @EJB
     private UserFacade userFacade;
+    @EJB private UserRolesFacade userRolesFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,6 +69,12 @@ public class UserServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         if(user == null){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему");
+            request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
+            return;
+        }
+        boolean isRole = userRolesFacade.isRole("READER", user);
+        if(!isRole){
+            request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему с соответствующими правами");
             request.getRequestDispatcher("/WEB-INF/showLoginForm.jsp").forward(request, response);
             return;
         }
@@ -104,7 +112,6 @@ public class UserServlet extends HttpServlet {
                 historyFacade.edit(history);
                 request.setAttribute("info","Добавлена возвращена");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
-                
                 break;
         }
     }

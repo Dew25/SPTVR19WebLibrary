@@ -24,7 +24,9 @@ package servlets;
 
 import entity.Book;
 import entity.Reader;
+import entity.Role;
 import entity.User;
+import entity.UserRoles;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -36,24 +38,60 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import session.BookFacade;
 import session.ReaderFacade;
+import session.RoleFacade;
 import session.UserFacade;
+import session.UserRolesFacade;
 
 /**
  *
  * @author jvm
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {
+@WebServlet(name = "LoginServlet", loadOnStartup = 1, urlPatterns = {
     "/showLoginForm",
     "/login",
     "/logout",
-    "/addReader",
-    "/createReader",
+    "/registrationForm",
+    "/registration",
     "/listBooks",
 })
 public class LoginServlet extends HttpServlet {
     @EJB private UserFacade userFacade;
     @EJB private ReaderFacade readerFacade;
     @EJB private BookFacade bookFacade;
+    @EJB private RoleFacade roleFacade;
+    @EJB private UserRolesFacade userRolesFacade;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        if(userFacade.findAll().size() > 0) return;
+        //Создаем суппер администратора
+        Reader reader = new Reader("Juri", "Melnikov", "56509987");
+        readerFacade.create(reader);
+        User user = new User("admin", "12345", reader);
+        userFacade.create(user);
+        
+        //Создаем и назначаем роли пользователю
+        Role role = new Role("ADMIN");
+        roleFacade.create(role);
+        UserRoles userRoles = new UserRoles(user, role);
+        userRolesFacade.create(userRoles);
+        
+        role = new Role("MANAGER");
+        roleFacade.create(role);
+        userRoles = new UserRoles(user, role);
+        userRolesFacade.create(userRoles);
+        
+        role = new Role("READER");
+        roleFacade.create(role);
+        userRoles = new UserRoles(user, role);
+        userRolesFacade.create(userRoles);
+        
+    }
+    
+    
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -100,10 +138,10 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("info", "Вы вышли! :)");
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
                 break;
-            case "/addReader":
-                request.getRequestDispatcher("/WEB-INF/addReaderForm.jsp").forward(request, response);
+            case "/registrationForm":
+                request.getRequestDispatcher("/WEB-INF/registrationForm.jsp").forward(request, response);
                 break;
-            case "/createReader":
+            case "/registration":
                 String name = request.getParameter("name");
                 String lastname = request.getParameter("lastname");
                 String phone = request.getParameter("phone");
@@ -125,6 +163,9 @@ public class LoginServlet extends HttpServlet {
                 readerFacade.create(reader);
                 user = new User(login, password, reader);
                 userFacade.create(user);
+                Role roleReader = roleFacade.findByName("READER");
+                UserRoles userRoles = new UserRoles(user, roleReader);
+                userRolesFacade.create(userRoles);
                 request.setAttribute("info","Добавлена читатель: " +reader.toString() );
                 request.getRequestDispatcher("/index.jsp").forward(request, response);
                 break;
