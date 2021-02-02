@@ -5,48 +5,37 @@
  */
 package servlets;
 
-import entity.Book;
-import entity.History;
-import entity.Reader;
+import entity.Cover;
 import entity.User;
+import java.io.File;
 import java.io.IOException;
-import java.util.GregorianCalendar;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import session.BookFacade;
-import session.HistoryFacade;
-import session.ReaderFacade;
-import session.UserFacade;
+import javax.servlet.http.Part;
+import session.CoverFacade;
 import session.UserRolesFacade;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "UserServlet", urlPatterns = {
-    
-    "/takeOnBookForm",
-    "/takeOnBook",
-    "/returnBookForm",
-    "/returnBook",
-})
-public class UserServlet extends HttpServlet {
-    @EJB 
-    private BookFacade bookFacade;
-    @EJB 
-    private ReaderFacade readerFacade;
-    @EJB
-    private HistoryFacade historyFacade;
-    @EJB
-    private UserFacade userFacade;
+@WebServlet(name = "uploadServlet", urlPatterns = {"/uploadCover"})
+@MultipartConfig
+public class uploadServlet extends HttpServlet {
     @EJB private UserRolesFacade userRolesFacade;
-
+    @EJB private CoverFacade coverFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -72,50 +61,44 @@ public class UserServlet extends HttpServlet {
             request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
-        boolean isRole = userRolesFacade.isRole("READER", user);
+        boolean isRole = userRolesFacade.isRole("MANAGER", user);
         if(!isRole){
             request.setAttribute("info", "У вас нет права для этого ресурса. Войдите в систему с соответствующими правами");
             request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
-        String path = request.getServletPath();
-        
-        switch (path) {
-            case "/takeOnBookForm":
-                List<Book> listBooks = bookFacade.findAll();
-                request.setAttribute("listBooks", listBooks);
-                List<Book> listReadBooks = historyFacade.findReadBook(user.getReader());
-                request.setAttribute("listReadBooks", listReadBooks);
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("takeOnBook")).forward(request, response);
-                break;
-            case "/takeOnBook":
-                String bookId = request.getParameter("bookId");
-                Book book = bookFacade.find(Long.parseLong(bookId));
-                Reader reader = user.getReader();
-                History history = new History(book, reader, new GregorianCalendar().getTime(), null);
-                historyFacade.create(history);
-                request.setAttribute("info","Добавлена выдана");
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
-                break;
-            case "/returnBookForm":
-                List<History> listHistoriesWithReadBook = historyFacade.findHistoriesWithReadBook(user.getReader());
-                request.setAttribute("listHistoriesWithReadBook", listHistoriesWithReadBook);
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("returnBook")).forward(request, response);
-                break;
-            case "/returnBook":
-                String historyId = request.getParameter("historyId");
-                if("".equals(historyId) || historyId == null || historyId == "-1"){
-                    request.setAttribute("info", "Выберите книгу");
-                    request.getRequestDispatcher("/returnBookForm").forward(request, response);
-                    break;
-                }
-                history = historyFacade.find(Long.parseLong(historyId));
-                history.setReturnDate(new GregorianCalendar().getTime());
-                historyFacade.edit(history);
-                request.setAttribute("info","Добавлена возвращена");
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
-                break;
+       String uploadFolder = "D:\\UploadFolder";
+       List<Part> fileParts = request
+               .getParts()
+               .stream()
+               .filter(part -> "file".equals(part.getName()))
+               .collect(Collectors.toList());
+       StringBuffer sb = new StringBuffer();
+       for(Part filePart : fileParts){
+           sb.append(uploadFolder+File.separator+getFileName(filePart));
+           File file = new File(sb.toString());
+           try(InputStream fileContent = filePart.getInputStream()){
+               Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+           }
+       }
+       String description = request.getParameter("description");
+       Cover cover = new Cover(description, sb.toString());
+       coverFacade.create(cover);
+       request.setAttribute("cover", cover);
+       request.setAttribute("info", "Файл загружен");
+       request.getRequestDispatcher("/addBook").forward(request, response);
+    }
+    private String getFileName(Part part){
+        final String partHeader = part.getHeader("content-disposition");
+        for (String content : part.getHeader("content-disposition").split(";")){
+            if(content.trim().startsWith("filename")){
+                return content
+                        .substring(content.indexOf('=')+1)
+                        .trim()
+                        .replace("\"",""); 
+            }
         }
+        return null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

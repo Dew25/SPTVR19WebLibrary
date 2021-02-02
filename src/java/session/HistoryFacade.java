@@ -5,8 +5,10 @@
  */
 package session;
 
+import entity.Book;
 import entity.History;
 import entity.Reader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,6 +40,17 @@ public class HistoryFacade extends AbstractFacade<History> {
                     .getResultList();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public List<Book> findReadBook(Reader reader) {
+        try {
+            List<Book> listReadBook = em.createQuery("SELECT h.book FROM History h WHERE h.reader = :reader AND h.returnDate=null")
+                    .setParameter("reader", reader)
+                    .getResultList();
+            return listReadBook;
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
     }
     

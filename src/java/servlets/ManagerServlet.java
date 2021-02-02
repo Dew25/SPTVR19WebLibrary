@@ -6,6 +6,7 @@
 package servlets;
 
 import entity.Book;
+import entity.Cover;
 import entity.Reader;
 import entity.User;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import session.BookFacade;
+import session.CoverFacade;
 import session.HistoryFacade;
 import session.ReaderFacade;
 import session.UserFacade;
@@ -32,6 +34,8 @@ import session.UserRolesFacade;
     "/createBook",
     "/editBookForm",
     "/editBook",
+    "/uploadForm",
+    
     
 
 })
@@ -45,6 +49,7 @@ public class ManagerServlet extends HttpServlet {
     @EJB
     private UserFacade userFacade;
     @EJB private UserRolesFacade userRolesFacade;
+    @EJB private CoverFacade coverFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -86,17 +91,21 @@ public class ManagerServlet extends HttpServlet {
                 String name = request.getParameter("name");
                 String author = request.getParameter("author");
                 String publishedYear = request.getParameter("publishedYear");
+                String coverId = request.getParameter("coverId");
                 if("".equals(name) || name == null 
                         || "".equals(author) || author == null
-                        || "".equals(publishedYear) || publishedYear == null){
+                        || "".equals(publishedYear) || publishedYear == null
+                        || "".equals(coverId) || coverId == null){
                     request.setAttribute("info","Заполните все поля формы");
                     request.setAttribute("name",name);
                     request.setAttribute("author",author);
                     request.setAttribute("publishedYear",publishedYear);
+                    request.setAttribute("coverId",coverId);
                     request.getRequestDispatcher("/addBook").forward(request, response);
                     break; 
                 }
-                Book book = new Book(name, author, Integer.parseInt(publishedYear));
+                Cover cover = coverFacade.find(Long.parseLong(coverId));
+                Book book = new Book(name, author, Integer.parseInt(publishedYear), cover);
                 bookFacade.create(book);
                 request.setAttribute("info","Добавлена книга: " +book.toString() );
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
@@ -129,7 +138,11 @@ public class ManagerServlet extends HttpServlet {
                 request.setAttribute("bookId", book.getId());
                 request.getRequestDispatcher("/editBookForm").forward(request, response);
                 break;
-            
+            case "/uploadForm":
+                
+                
+                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("upload")).forward(request, response);
+                break;
             
         }
     }
