@@ -33,7 +33,7 @@ import session.UserRolesFacade;
  */
 @WebServlet(name = "uploadServlet", urlPatterns = {"/uploadCover"})
 @MultipartConfig
-public class uploadServlet extends HttpServlet {
+public class UploadServlet extends HttpServlet {
     @EJB private UserRolesFacade userRolesFacade;
     @EJB private CoverFacade coverFacade;
     /**
@@ -73,7 +73,7 @@ public class uploadServlet extends HttpServlet {
                .stream()
                .filter(part -> "file".equals(part.getName()))
                .collect(Collectors.toList());
-       StringBuffer sb = new StringBuffer();
+       StringBuilder sb = new StringBuilder();
        for(Part filePart : fileParts){
            sb.append(uploadFolder+File.separator+getFileName(filePart));
            File file = new File(sb.toString());

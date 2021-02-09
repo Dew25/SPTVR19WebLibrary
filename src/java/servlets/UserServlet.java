@@ -82,6 +82,7 @@ public class UserServlet extends HttpServlet {
         
         switch (path) {
             case "/takeOnBookForm":
+                request.setAttribute("activeTakeOnBookForm", "true");
                 List<Book> listBooks = bookFacade.findAll();
                 request.setAttribute("listBooks", listBooks);
                 List<Book> listReadBooks = historyFacade.findReadBook(user.getReader());

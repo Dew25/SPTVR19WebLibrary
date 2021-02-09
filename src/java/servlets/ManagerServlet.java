@@ -85,6 +85,9 @@ public class ManagerServlet extends HttpServlet {
         
         switch (path) {
             case "/addBook":
+                request.setAttribute("activeAddBook", "true");
+                List<Cover> listCovers = coverFacade.findAll();
+                request.setAttribute("listCovers", listCovers);
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("addBook")).forward(request, response);
                 break;
             case "/createBook":
@@ -111,6 +114,7 @@ public class ManagerServlet extends HttpServlet {
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/editBookForm":
+                request.setAttribute("activeEditBookForm", "true");
                 String bookId = request.getParameter("bookId");
                 book = bookFacade.find(Long.parseLong(bookId));
                 request.setAttribute("book", book);
@@ -139,8 +143,6 @@ public class ManagerServlet extends HttpServlet {
                 request.getRequestDispatcher("/editBookForm").forward(request, response);
                 break;
             case "/uploadForm":
-                
-                
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("upload")).forward(request, response);
                 break;
             

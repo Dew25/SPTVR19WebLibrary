@@ -82,11 +82,13 @@ public class AdminServlet extends HttpServlet {
         
         switch (path) {
             case "/listReaders":
+                request.setAttribute("listReaders", "true");
                 List<Reader> listReaders = readerFacade.findAll();
                 request.setAttribute("listReaders", listReaders);
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("listReaders")).forward(request, response);
                 break;
             case "/adminPanel":
+                request.setAttribute("adminPanel", "true");
                 List<Role> listRoles = roleFacade.findAll();
                 request.setAttribute("listRoles", listRoles);
                 List<User> listUsers = userFacade.findAll();

@@ -112,6 +112,7 @@ public class LoginServlet extends HttpServlet {
         
         switch (path) {
             case "/showLoginForm":
+                request.setAttribute("activeShowLoginForm", "true");
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("login")).forward(request, response);
                 break;
             case "/login":
@@ -142,6 +143,7 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/registrationForm":
+                request.setAttribute("activeRegistrationForm", "true");
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("registration")).forward(request, response);
                 break;
             case "/registration":
@@ -173,6 +175,7 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
                 break;
             case "/listBooks":
+                request.setAttribute("activeListBooks", "true");
                 List<Book> listBooks = bookFacade.findAll();
                 request.setAttribute("listBooks", listBooks);
                 request.getRequestDispatcher(LoginServlet.pathToJsp.getString("listBooks")).forward(request, response);
