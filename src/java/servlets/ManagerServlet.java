@@ -94,6 +94,8 @@ public class ManagerServlet extends HttpServlet {
                 String name = request.getParameter("name");
                 String author = request.getParameter("author");
                 String publishedYear = request.getParameter("publishedYear");
+                String text = request.getParameter("text");
+                String price = request.getParameter("price");
                 String coverId = request.getParameter("coverId");
                 if("".equals(name) || name == null 
                         || "".equals(author) || author == null
@@ -103,15 +105,30 @@ public class ManagerServlet extends HttpServlet {
                     request.setAttribute("name",name);
                     request.setAttribute("author",author);
                     request.setAttribute("publishedYear",publishedYear);
+                    request.setAttribute("text",text);
+                    request.setAttribute("price",price);
                     request.setAttribute("coverId",coverId);
                     request.getRequestDispatcher("/addBook").forward(request, response);
                     break; 
                 }
                 Cover cover = coverFacade.find(Long.parseLong(coverId));
-                Book book = new Book(name, author, Integer.parseInt(publishedYear), cover);
+                Book book = null;
+                try {
+                    book = new Book(name, author, Integer.parseInt(publishedYear), text, price, cover);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("info","Неправильный формат цены: " + price );
+                    request.setAttribute("name",name);
+                    request.setAttribute("author",author);
+                    request.setAttribute("publishedYear",publishedYear);
+                    request.setAttribute("text",text);
+                    request.setAttribute("price",price);
+                    request.setAttribute("coverId",coverId);
+                    request.getRequestDispatcher("/addBook").forward(request, response);
+                    break;  
+                }
                 bookFacade.create(book);
                 request.setAttribute("info","Добавлена книга: " +book.toString() );
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
+                request.getRequestDispatcher("/addBook").forward(request, response);
                 break;
             case "/editBookForm":
                 request.setAttribute("activeEditBookForm", "true");

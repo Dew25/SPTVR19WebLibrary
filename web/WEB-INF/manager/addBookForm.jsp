@@ -28,6 +28,16 @@
                       <input type="text" class="form-control" name="publishedYear" id="publishedYear" value="${publishedYear}">
                     </div>
                   </div>
+                  <div class="form-floating">
+                    <textarea class="form-control" placeholder="text" name="text" id="text"></textarea>
+                    <label for="text">текст книги</label>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="price" class="col-sm-3 col-form-label">Цена:</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" id="price" name="price" value="${price}">
+                    </div>
+                  </div>
                   <div class="mb-3 row">
                     <label for="login" class="col-sm-3 col-form-label">Обложка: </label>
                     <div class="col-sm-9">

@@ -16,6 +16,7 @@
           <h5 class="card-title">${book.name}</h5>
           <p class="card-text">${book.author}</p>
           <p class="card-text">${book.publishedYear}</p>
+          <p class="card-text">Цена: ${book.price}</p>
           <a href="#" class="btn btn-primary">Читать</a>
           <a href="#" class="btn btn-primary">Купить</a>
         </div>

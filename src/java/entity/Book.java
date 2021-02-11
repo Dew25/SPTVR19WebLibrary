@@ -7,7 +7,10 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,16 +30,38 @@ public class Book implements Serializable, EntityInterface{
     private Integer publishedYear;
     @OneToOne
     private Cover cover;
+    @Basic(fetch = FetchType.LAZY)
+    private String text;
+    private Integer price;
 
     public Book() {
     }
 
-    public Book(String name, String author, Integer publishedYear, Cover cover) {
+    public Book(String name, String author, Integer publishedYear, String text, Integer price, Cover cover) {
         this.name = name;
         this.author = author;
         this.publishedYear = publishedYear;
+        this.text = text;
+        this.price = price;
         this.cover = cover;
     }
+    public Book(String name, String author, Integer publishedYear, String text, String price, Cover cover) {
+        this.name = name;
+        this.author = author;
+        this.publishedYear = publishedYear;
+        this.text = text;
+        this.setPrice(price);
+        this.cover = cover;
+    }
+    public Book(String name, String author, Integer publishedYear, String text, Double price, Cover cover) {
+        this.name = name;
+        this.author = author;
+        this.publishedYear = publishedYear;
+        this.text = text;
+        this.setPrice(price);
+        this.cover = cover;
+    }
+    
     
     public String getName() {
         return name;
@@ -126,6 +151,43 @@ public class Book implements Serializable, EntityInterface{
             return false;
         }
         return true;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setPrice(String price) {
+       if(price.matches(",")){
+           price = price.replaceAll(",", ".");
+       }
+        try {
+            Double d = Double.parseDouble(price);
+            this.price = (int)(d * 100);
+        } catch (Exception e) {
+            throw new NumberFormatException(price);
+        }
+       
+    }
+    public String getPriceToStr(){
+        double dPrice = this.price/100;
+        return String.format("%.2f", dPrice);
+    }
+
+    private void setPrice(Double price) {
+        this.price = (int)(price*100);
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
     
     

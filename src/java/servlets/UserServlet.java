@@ -2,6 +2,7 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * asadmin set configs.config.server-config.network-config.protocols.protocol.http-listener-1.http.max-form-post-size-bytes=-1
  */
 package servlets;
 
@@ -91,12 +92,17 @@ public class UserServlet extends HttpServlet {
                 break;
             case "/takeOnBook":
                 String bookId = request.getParameter("bookId");
+                if(bookId == null || "".equals(bookId)){
+                    request.setAttribute("info","Выберите книгу");
+                    request.getRequestDispatcher("/takeOnBookForm").forward(request, response);
+                    break;
+                }
                 Book book = bookFacade.find(Long.parseLong(bookId));
                 Reader reader = user.getReader();
                 History history = new History(book, reader, new GregorianCalendar().getTime(), null);
                 historyFacade.create(history);
                 request.setAttribute("info","Добавлена выдана");
-                request.getRequestDispatcher(LoginServlet.pathToJsp.getString("index")).forward(request, response);
+                request.getRequestDispatcher("/takeOnBookForm").forward(request, response);
                 break;
             case "/returnBookForm":
                 List<History> listHistoriesWithReadBook = historyFacade.findHistoriesWithReadBook(user.getReader());
