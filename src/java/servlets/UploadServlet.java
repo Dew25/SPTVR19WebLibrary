@@ -10,7 +10,6 @@ import entity.User;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -67,7 +66,7 @@ public class UploadServlet extends HttpServlet {
             request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
-       String uploadFolder = "D:\\UploadFolder";
+       String uploadFolder = "D:\\UploadDir\\SPTVR19WebLibrary";
        List<Part> fileParts = request
                .getParts()
                .stream()
@@ -75,8 +74,13 @@ public class UploadServlet extends HttpServlet {
                .collect(Collectors.toList());
        StringBuilder sb = new StringBuilder();
        for(Part filePart : fileParts){
-           sb.append(uploadFolder+File.separator+getFileName(filePart));
+           sb.append(uploadFolder)
+             .append(File.separator)
+             .append("images")
+             .append(File.separator)
+             .append(getFileName(filePart));
            File file = new File(sb.toString());
+           file.mkdirs();
            try(InputStream fileContent = filePart.getInputStream()){
                Files.copy(fileContent, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
            }
