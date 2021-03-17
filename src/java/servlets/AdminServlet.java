@@ -78,6 +78,13 @@ public class AdminServlet extends HttpServlet {
             request.getRequestDispatcher("/showLoginForm").forward(request, response);
             return;
         }
+        if(userRolesFacade.isRole("ADMIN",user)){
+            request.setAttribute("role", "ADMIN");
+        }else if(userRolesFacade.isRole("MANAGER",user)){
+            request.setAttribute("role", "MANAGER");
+        }else if(userRolesFacade.isRole("READER",user)){
+            request.setAttribute("role", "READER");
+        }
         String path = request.getServletPath();
         
         switch (path) {

@@ -13,28 +13,61 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link <c:if test="${activeListBooks eq true}">active</c:if>" aria-current="page" href="listBooks">Список книг</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeTakeOnBookForm eq true}">active</c:if>" href="takeOnBookForm">Взять книгу</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeAddBook eq true}">active</c:if>" href="addBook">Добавить книгу</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeListReaders eq true}">active</c:if>" href="listReaders">Список читателей</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeAdminPanel eq true}">active</c:if>" href="adminPanel">Панель администратора</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeShowLoginForm eq true}">active</c:if>" href="showLoginForm">Войти</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <c:if test="${activeLogout eq true}">active</c:if>" href="logout">Выйти</a>
-        </li>
+      <ul class="navbar-nav w-100 d-flex justify-content-end">
+          <c:if test="${role eq 'ADMIN'}">
+            <li class="nav-item">
+                <a class="nav-link <c:if test="${activeListBooks eq true}">active</c:if>" aria-current="page" href="listBooks">Список книг</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeTakeOnBookForm eq true}">active</c:if>" href="takeOnBookForm">Взять книгу</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeAddBook eq true}">active</c:if>" href="addBook">Добавить книгу</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeListReaders eq true}">active</c:if>" href="listReaders">Список читателей</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeAdminPanel eq true}">active</c:if>" href="adminPanel">Панель администратора</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeLogout eq true}">active</c:if>" href="logout">Выйти</a>
+            </li>
+          </c:if>
+          <c:if test="${role eq 'MANAGER'}">
+            <li class="nav-item">
+                <a class="nav-link <c:if test="${activeListBooks eq true}">active</c:if>" aria-current="page" href="listBooks">Список книг</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeTakeOnBookForm eq true}">active</c:if>" href="takeOnBookForm">Взять книгу</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeAddBook eq true}">active</c:if>" href="addBook">Добавить книгу</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeLogout eq true}">active</c:if>" href="logout">Выйти</a>
+            </li>
+          </c:if>
+          <c:if test="${role eq 'READER'}">
+            <li class="nav-item">
+                <a class="nav-link <c:if test="${activeListBooks eq true}">active</c:if>" aria-current="page" href="listBooks">Список книг</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeTakeOnBookForm eq true}">active</c:if>" href="takeOnBookForm">Взять книгу</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeLogout eq true}">active</c:if>" href="logout">Выйти</a>
+            </li>
+          </c:if>
+          <c:if test="${role eq null}">
+            <li class="nav-item">
+                <a class="nav-link <c:if test="${activeListBooks eq true}">active</c:if>" aria-current="page" href="listBooks">Список книг</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <c:if test="${activeShowLoginForm eq true}">active</c:if>" href="showLoginForm">Войти</a>
+            </li>
+          </c:if>
+          
       </ul>
     </div>
   </div>
